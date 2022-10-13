@@ -1,8 +1,11 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:netflics/application/downloads/downloads_bloc.dart';
 import 'package:netflics/core/colours/colors.dart';
 import 'package:netflics/core/constant.dart';
+import 'package:netflics/core/string.dart';
 
 import 'package:netflics/presentation/widgetsinpresentation/appbar.dart';
 
@@ -41,6 +44,11 @@ class Section2 extends StatelessWidget {
   ];
   @override
   Widget build(BuildContext context) {
+    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+
+    // });
+    BlocProvider.of<DownloadsBloc>(context)
+        .add(const DownloadsEvent.getDownloadsImage());
     final size = MediaQuery.of(context).size;
     return Column(
       children: [
@@ -57,33 +65,49 @@ class Section2 extends StatelessWidget {
           style: TextStyle(color: Colors.grey, fontSize: 16),
         ),
         Khieght,
-        SizedBox(
-          height: size.width,
-          width: size.width,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Center(
-                  child: CircleAvatar(
-                backgroundColor: Colors.grey.withOpacity(.5),
-                radius: size.width * .4,
-              )),
-              dowloadsimagewidget(
-                  size1: Size(size.width * .4, size.width * .58),
-                  angle: 20,
-                  imageslist: imageslist[0],
-                  margin: EdgeInsets.only(left: 170, bottom: 50, top: 3)),
-              dowloadsimagewidget(
-                  size1: Size(size.width * .4, size.width * .58),
-                  angle: -20,
-                  imageslist: imageslist[1],
-                  margin: EdgeInsets.only(right: 170, bottom: 50, top: 3)),
-              dowloadsimagewidget(
-                  size1: Size(size.width * .45, size.width * .65),
-                  imageslist: imageslist[0],
-                  margin: EdgeInsets.only(top: 3))
-            ],
-          ),
+        BlocBuilder<DownloadsBloc, DownloadsState>(
+          builder: (context, state) {
+            return state.isLoading
+                ? const CircularProgressIndicator()
+                : SizedBox(
+                    height: size.width,
+                    width: size.width,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Center(
+                            child: CircleAvatar(
+                          backgroundColor: Colors.grey.withOpacity(.5),
+                          radius: size.width * .4,
+                        )),
+                        dowloadsimagewidget(
+                            size1: Size(size.width * .4, size.width * .58),
+                            angle: 20,
+                            imageslist:
+                                '$imageappenturl${state.downloads[0].posterpath}',
+
+                            //imageslist[0],
+                            margin:
+                                EdgeInsets.only(left: 170, bottom: 50, top: 3)),
+                        dowloadsimagewidget(
+                            size1: Size(size.width * .4, size.width * .58),
+                            angle: -20,
+                            imageslist:
+
+                                // imageslist[0],
+                                '$imageappenturl${state.downloads[1].posterpath}',
+                            margin: EdgeInsets.only(
+                                right: 170, bottom: 50, top: 3)),
+                        dowloadsimagewidget(
+                            size1: Size(size.width * .45, size.width * .65),
+                            imageslist:
+                                // imageslist[0],
+                                '$imageappenturl${state.downloads[2].posterpath}',
+                            margin: EdgeInsets.only(top: 3))
+                      ],
+                    ),
+                  );
+          },
         ),
       ],
     );

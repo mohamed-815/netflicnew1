@@ -6,3 +6,5 @@ const kbuttoncolorbleu = Colors.blue;
 const kbuttoncolorwhite = Colors.white;
 const kblack = Colors.black;
 const kbleu = Colors.blueAccent;
+
+const kblrrreu = Colors.blueAccent;

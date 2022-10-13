@@ -1,12 +1,18 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:netflics/application/downloads/downloads_bloc.dart';
 import 'package:netflics/core/colours/colors.dart';
+import 'package:netflics/domain/core/di/injectable.dart';
 
 import 'package:netflics/presentation/mainpage/wigets/screenmainpage.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await configureInjection();
+
   runApp(const MyApp());
   HttpOverrides.global = MyHttpOverrides();
 }
@@ -25,20 +31,23 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-          appBarTheme: AppBarTheme(
-            color: Colors.transparent,
-          ),
-          fontFamily: GoogleFonts.montserrat().fontFamily,
-          scaffoldBackgroundColor: backgroundcolor1,
-          primarySwatch: Colors.blue,
-          backgroundColor: Colors.black,
-          textTheme: TextTheme(
-            bodyText1: TextStyle(color: Colors.white),
-            bodyText2: TextStyle(color: Colors.white),
-          )),
-      home: MainScreen(),
+    return MultiBlocProvider(
+      providers: [BlocProvider(create: ((ctx) => getIt<DownloadsBloc>()))],
+      child: MaterialApp(
+        theme: ThemeData(
+            appBarTheme: AppBarTheme(
+              color: Colors.transparent,
+            ),
+            fontFamily: GoogleFonts.montserrat().fontFamily,
+            scaffoldBackgroundColor: backgroundcolor1,
+            primarySwatch: Colors.blue,
+            backgroundColor: Colors.black,
+            textTheme: TextTheme(
+              bodyText1: TextStyle(color: Colors.white),
+              bodyText2: TextStyle(color: Colors.white),
+            )),
+        home: MainScreen(),
+      ),
     );
   }
 }
